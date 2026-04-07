@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mechanical Service</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #FF6B35;
+  --primary-dark: #e85a2a;
+  --secondary: #1a1a2e;
+  --accent: #4CC9F0;
+  --bg-light: #f8f9fa;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; }
+
+body { 
+  margin: 0; 
+  font-family: 'Plus Jakarta Sans', sans-serif; 
+  scroll-behavior: smooth; 
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+h1, h2, h3 { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary); }
+
+nav {
+  position: sticky; top: 0;
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  z-index: 1000;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+nav a { 
+  color: #e2e8f0; 
+  text-decoration: none; 
+  font-weight: 500; 
+  transition: var(--transition);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+nav a:hover { color: var(--primary); }
+nav a.active { color: var(--primary); font-weight: 600; }
+
+section {
+  padding: 100px 5% 60px;
+  min-height: 100vh;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+section.visible { opacity: 1; transform: translateY(0); }
+
+.hero {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.hero img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  transition: var(--transition);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid #f1f5f9;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  border-color: var(--primary);
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.card h3 { margin: 0 0 0.5rem; font-size: 1.25rem; }
+.card p { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+
+.modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: none; justify-content: center; align-items: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-content button {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: #f1f5f9; border: none; width: 36px; height: 36px;
+  border-radius: 50%; cursor: pointer; font-weight: bold;
+  transition: var(--transition);
+}
+.modal-content button:hover { background: var(--primary); color: white; }
+
+.modal-content img { width: 100%; border-radius: 16px; margin-bottom: 1.5rem; }
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+input, select, textarea {
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #f1f5f9;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+}
+
+button[type="submit"] {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1rem;
+}
+
+button[type="submit"]:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
+}
+
+.whatsapp {
+  position: fixed; bottom: 32px; right: 32px;
+  background: #25D366;
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+  z-index: 999;
+  text-decoration: none;
+  font-size: 24px;
+  transition: var(--transition);
+}
+
+.whatsapp:hover { transform: scale(1.1) rotate(10deg); }
+
+.admin-panel {
+  background: var(--secondary);
+  color: white;
+  padding: 3rem;
+  border-radius: 24px;
+  margin-top: 4rem;
+}
+
+.admin-panel h3 { color: white; margin-top: 0; }
+
+@media(max-width: 768px){
+  .hero h1 { font-size: 2.5rem; }
+  nav { padding: 1rem; }
+  nav ul { gap: 1rem; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+<div style="font-family:'Outfit'; font-weight:700; color:var(--primary); font-size:1.5rem;">MECH.</div>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+
+<!-- HOME -->
+<section id="home">
+<div class="hero">
+<h1>Your Trusted Mechanical Service Partner</h1>
+<img id="heroImg">
+</div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+<h2>Our Premium Services</h2>
+<div class="services-grid" id="servicesGrid"></div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<button onclick="closeModal()">✕</button>
+<img id="modalImg">
+<h3 id="modalTitle"></h3>
+<p id="modalDesc"></p>
+</div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+<h2>About Our Expertise</h2>
+<p style="font-size:1.1rem; line-height:1.8; color:var(--text-muted); max-width:800px;">
+  We provide trusted mechanical services since 2010. Dedicated to providing top-notch automotive care with state-of-the-art facilities and experienced technicians.
+</p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+<h2 style="text-align:center; margin-bottom:2rem;">Get in Touch</h2>
+
+<form id="form">
+<input id="name" placeholder="Full Name" required>
+<input id="email" type="email" placeholder="Email Address" required>
+<input id="phone" placeholder="Phone Number" required>
+
+<select id="service">
+<option selected disabled>Select a Service</option>
+<option>Engine Repair</option>
+<option>Oil Change</option>
+<option>Brake Service</option>
+<option>AC Service</option>
+</select>
+
+<textarea id="message" placeholder="How can we help you?" rows="4"></textarea>
+<button type="submit">Submit Request</button>
+</form>
+</section>
+
+<!-- ADMIN UPLOAD -->
+<section id="admin">
+<div class="admin-panel">
+<h3>Admin Portal</h3>
+<p>Manage your hero images from here.</p>
+<div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+  <input type="file" id="file" style="border-color:var(--glass-border); background:var(--glass); color:white;">
+  <button onclick="upload()" style="background:var(--primary); color:white; border:none; padding:0.8rem 1.5rem; border-radius:10px; cursor:pointer; font-weight:600;">Upload Hero Image</button>
+</div>
+</div>
+</section>
+
+<!-- WHATSAPP -->
+<a class="whatsapp" href="https://wa.me/919999999999" target="_blank">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793 0-.853.448-1.273.607-1.446.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.101-.177.211-.077.383.101.173.448.743.961 1.201.66.589 1.215.771 1.388.857.173.087.275.072.376-.043.101-.116.434-.506.549-.68.116-.173.231-.144.39-.087s1.011.477 1.184.564c.173.087.289.13.332.202.043.072.043.419-.101.824z"/></svg>
+</a>
+
+<script type="module">
+
+/* ================= FIREBASE CONFIG ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-storage.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD7ixvepTnPNh7kQf3DTCv4qlbdHiaEYTU",
+  authDomain: "mech-123bb.firebaseapp.com",
+  projectId: "mech-123bb",
+  storageBucket: "mech-123bb.firebasestorage.app",
+  messagingSenderId: "419951339009",
+  appId: "1:419951339009:web:fa03f5bdd0b90937664200",
+  measurementId: "G-Z7RZ8VMPXY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const analytics = getAnalytics(app);
+
+/* ================= HERO IMAGES ================= */
+let images=[];
+
+onSnapshot(collection(db,"hero_images"),snap=>{
+  images=snap.docs.map(d=>d.data().url);
+
+  if(images.length===0){
+    images=[
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+      "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98"
+    ];
+  }
+
+  startCarousel();
+});
+
+let i=0;
+function startCarousel(){
+  setInterval(()=>{
+    document.getElementById("heroImg").src=images[i];
+    i=(i+1)%images.length;
+  },4000);
+}
+
+/* ================= SERVICES ================= */
+async function loadServices(){
+  const snap=await getDocs(collection(db,"services"));
+  const grid=document.getElementById("servicesGrid");
+
+  snap.forEach(doc=>{
+    const s=doc.data();
+
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <img src="${s.images}">
+      <h3>${s.title}</h3>
+      <p>${s.description}</p>
+    `;
+
+    card.onclick=()=>openModal(s);
+
+    grid.appendChild(card);
+  });
+}
+loadServices();
+
+/* ================= MODAL ================= */
+window.openModal=(s)=>{
+  modal.style.display="flex";
+  modalImg.src=s.images;
+  modalTitle.innerText=s.title;
+  modalDesc.innerText=s.description;
+};
+
+window.closeModal=()=>modal.style.display="none";
+
+/* ================= CONTACT ================= */
+document.getElementById("form").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+
+  await addDoc(collection(db,"enquiries"),{
+    name:name.value,
+    email:email.value,
+    phone:phone.value,
+    service:service.value,
+    message:message.value,
+    timestamp:new Date()
+  });
+
+  alert("Submitted!");
+});
+
+/* ================= ADMIN UPLOAD ================= */
+window.upload=async ()=>{
+  const file=document.getElementById("file").files[0];
+  if(!file) return;
+
+  const storageRef=ref(storage,"hero_images/"+file.name);
+  await uploadBytes(storageRef,file);
+
+  const url=await getDownloadURL(storageRef);
+
+  await addDoc(collection(db,"hero_images"),{url});
+
+  alert("Uploaded!");
+};
+
+/* ================= NAV ACTIVE ================= */
+const sections=document.querySelectorAll("section");
+const navLinks=document.querySelectorAll("nav a");
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove("active"));
+      document.querySelector(`a[href="#${e.target.id}"]`)?.classList.add("active");
+      e.target.classList.add("visible");
+    }
+  });
+},{threshold:0.5});
+
+sections.forEach(s=>obs.observe(s));
+
+</script>
+
+</body>
+</html>
