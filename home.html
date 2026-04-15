@@ -372,21 +372,22 @@ function startCarousel(){
 
 /* ================= SERVICES ================= */
 async function loadServices(){
-  const snap=await getDocs(collection(db,"services"));
+  const snap=await getDocs(collection(db,"1"));
   const grid=document.getElementById("servicesGrid");
 
   snap.forEach(doc=>{
     const s=doc.data();
+    const desc = s.description || s.decription || "";
 
     const card=document.createElement("div");
     card.className="card";
     card.innerHTML=`
       <img src="${s.images}">
       <h3>${s.title}</h3>
-      <p>${s.description}</p>
+      <p>${desc}</p>
     `;
 
-    card.onclick=()=>openModal(s);
+    card.onclick=()=>openModal({...s, description: desc});
 
     grid.appendChild(card);
   });
