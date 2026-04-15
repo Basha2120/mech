@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanical Service</title>
+<link rel="icon" href="data:,">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -392,7 +393,7 @@ async function loadServices(){
     grid.appendChild(card);
   });
 }
-loadServices();
+loadServices().catch(err => console.error("Firebase read failed:", err));
 
 /* ================= MODAL ================= */
 window.openModal=(s)=>{
